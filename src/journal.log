@@ -1,0 +1,7 @@
+[30/11/2025 23:11:31] OP: CRIAR_DIR | ALVO: Unifor
+[30/11/2025 23:11:41] OP: CRIAR_DIR | ALVO: Projetos
+[30/11/2025 23:12:00] OP: CRIAR_ARQ | ALVO: relatorio.txt (Size: 9)
+[30/11/2025 23:12:33] OP: COPIAR | ALVO: relatio.txt -> backup.txt
+[30/11/2025 23:12:51] OP: COPIAR | ALVO: relatorio.txt -> backup.txt
+[30/11/2025 23:13:09] OP: RENOMEAR | ALVO: relatorio.txt -> final.txt
+[30/11/2025 23:13:15] OP: APAGAR | ALVO: Projetos
