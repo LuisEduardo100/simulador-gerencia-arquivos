@@ -1,5 +1,11 @@
 package backend;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 /**
@@ -9,11 +15,60 @@ import java.util.List;
 public class FSSimulador {
     private Diretorio raiz;
     private Diretorio diretorioAtual;
+    private final String ARQUIVO_DADOS = "filesystem.dat";
 
     public FSSimulador() {
-        // Inicializa o sistema com um diretório raiz "/"
-        this.raiz = new Diretorio("root", null);
-        this.diretorioAtual = this.raiz;
+        if (!carregarEstado()) {
+            System.out.println("Nenhum dado anterior encontrado. Iniciando novo sistema de arquivos.");
+            this.raiz = new Diretorio("root", null);
+            this.diretorioAtual = this.raiz;
+        } else {
+            System.out.println("Sistema de arquivos restaurado com sucesso de '" + ARQUIVO_DADOS + "'.");
+        }
+    }
+
+    public String lerArquivo(String nome) {
+        FSNode no = diretorioAtual.buscarFilho(nome);
+        
+        if (no == null) {
+            return "Erro: Arquivo '" + nome + "' não existe.";
+        }
+        
+        if (no instanceof Diretorio) {
+            return "Erro: '" + nome + "' é um diretório, não um arquivo de texto.";
+        }
+        
+        Arquivo arq = (Arquivo) no;
+        return arq.getConteudo();
+    }
+
+    /**
+     * Salva o objeto Raiz (e consequentemente todos os filhos) no arquivo físico.
+     */
+    public void salvarEstado() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ARQUIVO_DADOS))) {
+            oos.writeObject(this.raiz);
+            System.out.println("Estado do sistema salvo em '" + ARQUIVO_DADOS + "'.");
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar o estado do sistema: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Tenta ler o arquivo .dat e reconstruir a árvore de diretórios.
+     */
+    private boolean carregarEstado() {
+        File arq = new File(ARQUIVO_DADOS);
+        if (!arq.exists()) return false;
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arq))) {
+            this.raiz = (Diretorio) ois.readObject();
+            this.diretorioAtual = this.raiz; // Reseta o ponteiro para a raiz ao carregar
+            return true;
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Erro ao carregar dados: " + e.getMessage());
+            return false;
+        }
     }
 
     /**

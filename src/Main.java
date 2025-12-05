@@ -1,7 +1,7 @@
-package frontend;
-
-import backend.FSSimulador; // Importando a classe do seu amigo
 import java.util.Scanner;
+
+import backend.FSSimulador;
+import frontend.Journal;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,7 +33,8 @@ public class Main {
             // Lógica de Comandos
             switch (comando) {
                 case "exit":
-                    System.out.println("Encerrando simulador...");
+                    System.out.println("Salvando estado do sistema...");
+                    simulador.salvarEstado();
                     scanner.close();
                     System.exit(0);
                     break;
@@ -78,6 +79,13 @@ public class Main {
                     }
                     break;
 
+                case "cat": 
+                    if (verificarArg(argumento)) {
+                        // Apenas leitura, não precisa de log no Journal
+                        System.out.println(simulador.lerArquivo(argumento));
+                    }
+                    break;
+
                 case "mv": // Renomear
                     if (partes.length < 3) {
                         System.out.println("Uso: mv <nomeAntigo> <nomeNovo>");
@@ -117,6 +125,7 @@ public class Main {
         System.out.println("\n--- Comandos Disponíveis ---");
         System.out.println("mkdir <nome>       : Cria um diretório");
         System.out.println("touch <nome>       : Cria um arquivo (pede conteúdo depois)");
+        System.out.println("cat <nome>         : Lê o conteúdo de um arquivo");
         System.out.println("rm <nome>          : Apaga arquivo ou diretório");
         System.out.println("cd <nome>          : Entra no diretório (ou 'cd ..' para voltar)");
         System.out.println("ls                 : Lista o conteúdo atual");

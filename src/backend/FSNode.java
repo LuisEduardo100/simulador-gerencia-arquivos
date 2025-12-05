@@ -1,12 +1,14 @@
 package backend;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Classe Abstrata que representa um nó genérico no sistema de arquivos.
  * Serve de base tanto para Arquivos quanto para Diretórios.
  */
-public abstract class FSNode {
+public abstract class FSNode implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String nome;
     protected Diretorio pai; // Referência para o diretório onde este nó está
     protected Date dataCriacao;
